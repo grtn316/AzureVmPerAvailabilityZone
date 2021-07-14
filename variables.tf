@@ -18,6 +18,11 @@ variable "serverName" {
   default = "gridvm"
 }
 
+variable "vmSKU" {
+  description = "Sku of the Virtual Machines to provision."
+  default = "Standard_E16ds_v4"
+}
+
 variable "adminUsername" {
   description = "Username"
   default = "adminuser"

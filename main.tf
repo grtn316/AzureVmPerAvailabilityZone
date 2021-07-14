@@ -66,7 +66,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   zone                            = "${count.index+1}"
-  size                            = "Standard_E16ds_v4"
+  size                            = var.vmSKU
   admin_username                  = var.adminUsername
   admin_password                  = var.adminPassword
   disable_password_authentication = false
