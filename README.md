@@ -4,12 +4,12 @@ This repository will deploy a single linux VM into each Azure Availability Zone 
 
 This code will create a new resource group for the VMs and connect them to an existing subnet within a VNet by setting the `subnetId` variable.
 
-You will need a create a `variables.tfvars` file and add set the required variables for the deployment:
+You will need a create a `variables.tfvars` file and set the __required variables__ for the deployment:
 -  `subnetId`
     - Example: `/subscriptions/<subId>/resourceGroups/<rgName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>`
 -  `adminPassword`
 
-Optional variables that can be overriden for the deployment:
+__Optional variables__ that can be overriden for the deployment:
 -  `resourceGroupName`
 -  `location`
     - `numAvailabilityZones` - if the location is changed, you will need to confirm the region has 3 zones.
@@ -37,7 +37,7 @@ sudo yum install -y fio
 sudo mkdir /mnt/nfsshare #(or use a permanent directory)
 sudo mount -t nfs -o rw,hard,rsize=65536,wsize=65536,nconnect=8,vers=3,tcp 10.0.1.1:/nfssharename /mnt/nfsshare
 ```
-To test with fio create a config file simliar to below:
+To test with fio, create a config file simliar to below:
 
 filename: `fio.cfg`
 ```bash
@@ -67,6 +67,20 @@ You can then test using the following command:
 fio fio.cfg
 ```
 
-Optionally you may use the iodepth parameter to control the amount of I/O units used during testing. For Example:
+Optionally you may use the iodepth parameter to control the amount of I/O units used during testing.
+
+For Example:
 -  `--iodepth=1` (default)
 -  `--iodepth=37`
+
+# Notes
+- Generation 1 VMs are currently being deployed due to the image defined in the `source_image_reference` resource object in `main.tf`. It is recommended to migrate to a generation 2 image.
+- The OS disk is being set to `Premium_LRS` as this is the Azure portal default even though the terraform example use `Standard_LRS`. This configuration provides almost 6x more burstable IOPS.
+- This deployment is configuring a Public IP which should be used for __testing only__.
+- This deployment is allows a password which should be used for __testing only__. It is __strongly recommended__ to use SSH Keys insead. This can be accomplished by adding the following block to the the `azurerm_linux_virtual_machine` resouce and enabling `disable_password_authentication` parameter:
+- ```terraform
+    admin_ssh_key {
+        username   = "adminuser"
+        public_key = file("~/.ssh/id_rsa.pub")
+    }
+  ```
