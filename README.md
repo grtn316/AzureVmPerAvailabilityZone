@@ -23,7 +23,7 @@ Run the following commands to test the Terraform example:
 az login
 
 terraform init 
-terraform apply -input=false -auto-approve
+terraform apply -input=false -auto-approve -var-file="variables.tfvars"
 ```
 
 # NFS Testing
